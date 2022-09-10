@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProvinceRequest;
+use App\Http\Resources\ApiCollection;
+use App\Http\Resources\ApiResource;
 use App\Models\Province;
 use Illuminate\Http\Request;
 
@@ -15,9 +17,7 @@ class ProvinceController extends Controller
      */
     public function index()
     {
-        return [
-            'provinces' => Province::all()
-        ];
+        return new ApiCollection(Province::all());
     }
 
     /**
@@ -30,9 +30,7 @@ class ProvinceController extends Controller
     {
         $province = Province::create($request->validated());
 
-        return [
-            'province' => $province
-        ];
+        return new ApiResource($province);
     }
 
     /**
@@ -43,10 +41,7 @@ class ProvinceController extends Controller
      */
     public function show(Province $province)
     {
-        //
-        return [
-            'province' => $province
-        ];
+        return new ApiResource($province);
     }
 
     /**
