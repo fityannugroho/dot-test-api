@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProvinceRequest;
 use App\Models\Province;
 use Illuminate\Http\Request;
 
@@ -22,12 +23,16 @@ class ProvinceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreProvinceRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProvinceRequest $request)
     {
-        //
+        $province = Province::create($request->validated());
+
+        return [
+            'province' => $province
+        ];
     }
 
     /**
