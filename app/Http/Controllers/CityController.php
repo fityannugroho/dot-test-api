@@ -13,10 +13,18 @@ class CityController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $id = $request->input('id');
+
+        if ($id) {
+            $city = City::find($id);
+            return new ApiResource($city);
+        }
+
         return new ApiCollection(City::all());
     }
 

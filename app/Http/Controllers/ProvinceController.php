@@ -13,10 +13,18 @@ class ProvinceController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $id = $request->input('id');
+
+        if ($id) {
+            $province = Province::find($id);
+            return new ApiResource($province);
+        }
+
         return new ApiCollection(Province::all());
     }
 
