@@ -28,7 +28,7 @@ class FetchProvincesDataFromAPI extends Command
      */
     public function handle()
     {
-        $continue = $this->confirm('All existing data will be deleted. Are you sure you want to continue?');
+        $continue = $this->confirm('All existing data in `provinces` table will be deleted. Continue?');
 
         if (!$continue) {
             $this->info('Aborted!');
@@ -55,6 +55,6 @@ class FetchProvincesDataFromAPI extends Command
             ]);
         }
 
-        $this->info('Provinces data fetched successfully.');
+        $this->line('Provinces data fetched successfully.');
     }
 }
