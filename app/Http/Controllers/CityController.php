@@ -33,6 +33,11 @@ class CityController extends Controller
 
         if ($id) {
             $city = $this->useExternalSrc ? City::getFromExternal($id) : City::find($id);
+
+            if (empty($city)) {
+                return $this->error('Not found', 404);
+            }
+
             return $this->success($city);
         }
 

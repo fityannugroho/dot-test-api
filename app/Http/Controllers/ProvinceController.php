@@ -33,6 +33,11 @@ class ProvinceController extends Controller
 
         if ($id) {
             $province = $this->useExternalSrc ? Province::getFromExternal($id) : Province::find($id);
+
+            if (empty($province)) {
+                return $this->error('Not found', 404);
+            }
+
             return $this->success($province);
         }
 
