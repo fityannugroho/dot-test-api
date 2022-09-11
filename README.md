@@ -27,13 +27,11 @@ You can fetch data from the external source API by following these steps:
    - `EXTERNAL_SOURCE_KEY` - The API key of the external source API.
    - `EXTERNAL_SOURCE_DATA_PATH` - The path of the data in the external source API response, separated by dot (e.g. `data.data`).
 2. Make sure the database server is running.
-3. Run this command to fetch the data from the external source API:
-   - **`php artisan fetch:provinces`** - Fetch the provinces data and store it in `provinces` table.
-   - **`php artisan fetch:cities`** - Fetch the cities data and store it in `cities` table.
+3. Run `php artisan fetch` command to start fetch the data from the external source API.
 
 > **Warning!**
 >
-> If you use one of the above commands, all data in the related table **will be lost** and replaced with the new data.
+> `php artisan fetch` command will fetch the data from the external source API and store it in the database. **All existing data will be lost**.
 
 ## API Documentation
 
