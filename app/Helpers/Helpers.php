@@ -28,25 +28,23 @@ if (! function_exists('fetch')) {
     /**
      * Fetch data from external API.
      * @param string $url The API URL.
-     * @param string $key The API key.
-     * @param string $path The path to the data to return, separated by dots. Example: "data.fruits".
-     * @param array $params The parameters to send to the API.
+     * @param array $options The request options to send.
+     * - `method`: The HTTP method. Default: 'GET'.
+     * - `returnTarget`: The path to the data to return separated by dots. Example: "data.fruits". Default: ''.
+     *
      * @return array The data fetched from the API.
+     * @link https://docs.guzzlephp.org/en/stable Guzzle Documentation
      */
-    function fetch($url, $key = '', $path = '', $params = [])
+    function fetch(string $url, array $options = [])
     {
         $client = new \GuzzleHttp\Client();
-
-        $response = $client->request('GET', $url, [
-            'query' => array_merge($params, ['key' => $key])
-        ]);
-
+        $response = $client->request($options['method'] ?? 'GET', $url, $options);
         $data = json_decode($response->getBody(), true);
 
-        if (empty($path)) {
+        if (empty($options['returnTarget'])) {
             return $data;
         }
 
-        return getNestedVar($data, $path);
+        return getNestedVar($data, $options['returnTarget']);
     }
 }

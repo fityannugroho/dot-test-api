@@ -83,15 +83,14 @@ class Province extends Model
     public static function getFromExternal(string $id = '')
     {
         $url = config('source.external_url') . '/province';
+        $options['query']['key'] = config('source.external_key');
+        $options['returnTarget'] = config('source.external_data_path');
 
-        return static::parseFromExternal(fetch(
-            $url,
-            config('source.external_key'),
-            config('source.external_data_path'),
-            [
-                'id' => $id
-            ]
-        ));
+        if (!empty($id)) {
+            $options['query']['id'] = $id;
+        }
+
+        return static::parseFromExternal(fetch($url, $options));
     }
 
     /**
