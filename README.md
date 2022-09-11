@@ -33,6 +33,12 @@ You can fetch data from the external source API by following these steps:
 >
 > `php artisan fetch` command will fetch the data from the external source API and store it in the database. **All existing data will be lost**.
 
+## Swappable Data Source
+
+You can swap the data source by simply changing the `USE_EXTERNAL_SOURCE` in the `.env` file to **`true`** . The application will use the external source API as the data source.
+
+Make sure you have configured the `.env` file with your **external source API connection** as described in the [Fetching data](#fetching-data) section.
+
 ## API Documentation
 
 The base URL of the API is `http://localhost:8000/api`.
