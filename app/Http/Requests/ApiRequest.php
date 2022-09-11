@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\ApiResponser;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
@@ -11,12 +12,13 @@ use Illuminate\Contracts\Validation\Validator;
  */
 class ApiRequest extends FormRequest
 {
+    use ApiResponser;
+
     public function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'statusCode' => 400,
-            'error' => 'Bad Request',
-            'message' => array_merge(...array_values($validator->errors()->toArray())),
-        ], 400));
+        throw new HttpResponseException($this->error(
+            array_merge(...array_values($validator->errors()->toArray())),
+            400
+        ));
     }
 }
