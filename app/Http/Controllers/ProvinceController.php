@@ -23,6 +23,11 @@ class ProvinceController extends Controller
 
         if ($id) {
             $province = Province::find($id);
+
+            if (empty($province)) {
+                return $this->error('Not found', 404);
+            }
+
             return $this->success($province);
         }
 
