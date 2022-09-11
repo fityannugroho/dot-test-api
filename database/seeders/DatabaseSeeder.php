@@ -14,11 +14,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $theTester = \App\Models\User::firstWhere('email', config('seeder.tester_email'));
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Create The Tester if not exists.
+        if (empty($theTester)) {
+            $theTester = $this->createTester();
+        }
+    }
+
+    /**
+     * Create an user as "The Tester".
+     */
+    private function createTester()
+    {
+        return \App\Models\User::factory()->create([
+            'name' => config('seeder.tester_name'),
+            'email' => config('seeder.tester_email'),
+            'password' => bcrypt(config('seeder.tester_password')),
+            'email_verified_at' => now(),
+        ]);
     }
 }
