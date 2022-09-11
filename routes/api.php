@@ -15,8 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('login', [AuthController::class, 'login'])
-    ->name('login');
+Route::post('login', [AuthController::class, 'login']);
 
 Route::apiResource('provinces', 'App\Http\Controllers\ProvinceController')
     ->only(['index', 'store'])
