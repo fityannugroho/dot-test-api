@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCityRequest;
-use App\Http\Resources\ApiCollection;
-use App\Http\Resources\ApiResource;
 use App\Models\City;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
+    use ApiResponser;
+
     /**
      * Determine if the data is from database or external source.
      * @var bool
@@ -32,10 +33,10 @@ class CityController extends Controller
 
         if ($id) {
             $city = $this->useExternalSrc ? City::getFromExternal($id) : City::find($id);
-            return new ApiResource($city);
+            return $this->success($city);
         }
 
-        return new ApiCollection($this->useExternalSrc ? City::getFromExternal() : City::all());
+        return $this->success($this->useExternalSrc ? City::getFromExternal() : City::all());
     }
 
     /**
@@ -48,7 +49,7 @@ class CityController extends Controller
     {
         $city = City::create($request->validated());
 
-        return new ApiResource($city);
+        return $this->success($city, 'Created', 201);
     }
 
     /**
@@ -59,7 +60,7 @@ class CityController extends Controller
      */
     public function show(City $city)
     {
-        return new ApiResource($city);
+        return $this->success($city);
     }
 
     /**
