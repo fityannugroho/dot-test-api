@@ -47,7 +47,7 @@ class FetchDataFromApi extends Command
         try {
             $this->comment('Fetching provinces data...');
 
-            $provinces = $this->fetchData(
+            $provinces = fetch(
                 config('source.external_url') . '/province',
                 config('source.external_key'),
                 config('source.external_data_path')
@@ -87,7 +87,7 @@ class FetchDataFromApi extends Command
         try {
             $this->comment('Fetching cities data...');
 
-            $cities = $this->fetchData(
+            $cities = fetch(
                 config('source.external_url') . '/city',
                 config('source.external_key'),
                 config('source.external_data_path')
@@ -121,24 +121,5 @@ class FetchDataFromApi extends Command
         }
 
         $this->line('Cities data inserted successfully.');
-    }
-
-    /**
-     * Fetch data from external API.
-     * @param string $url The API URL.
-     * @param string $key The API key.
-     * @param string $path The path to the data, separated by dot. Example: data.results
-     */
-    private function fetchData(string $url, string $key, string $path = '')
-    {
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', $url, [
-            'query' => [
-                'key' => $key
-            ]
-        ]);
-
-        $data = json_decode($response->getBody()->getContents(), true);
-        return getNestedVar($data, $path, []);
     }
 }

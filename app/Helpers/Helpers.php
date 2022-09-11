@@ -23,3 +23,29 @@ if (! function_exists('getNestedVar')) {
         return $context;
     }
 }
+
+if (! function_exists('fetch')) {
+    /**
+     * Fetch data from external API.
+     * @param string $url The API URL.
+     * @param string $key The API key.
+     * @param string $path The path to the data to return, separated by dots. Example: "data.fruits".
+     * @param array $params The parameters to send to the API.
+     * @return array The data fetched from the API.
+     */
+    function fetch($url, $key = '', $path = '', $params = [])
+    {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $url, [
+            'query' => array_merge($params, ['key' => $key])
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+
+        if (empty($path)) {
+            return $data;
+        }
+
+        return getNestedVar($data, $path);
+    }
+}
