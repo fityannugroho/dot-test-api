@@ -11,6 +11,16 @@ use Illuminate\Http\Request;
 class ProvinceController extends Controller
 {
     /**
+     * Determine if the data is from database or external source.
+     * @var bool
+     */
+    private bool $useExternalSrc;
+
+    public function __construct() {
+        $this->useExternalSrc = config('source.use_external');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -21,11 +31,11 @@ class ProvinceController extends Controller
         $id = $request->input('id');
 
         if ($id) {
-            $province = Province::find($id);
+            $province = $this->useExternalSrc ? Province::getFromExternal($id) : Province::find($id);
             return new ApiResource($province);
         }
 
-        return new ApiCollection(Province::all());
+        return new ApiCollection($this->useExternalSrc ? Province::getFromExternal() : Province::all());
     }
 
     /**

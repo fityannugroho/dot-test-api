@@ -74,4 +74,47 @@ class Province extends Model
     {
         parent::boot();
     }
+
+    /**
+     * Get province(s) data from external source.
+     * @param string $id The province Id.
+     * @return array The province data(s) from external source.
+     */
+    public static function getFromExternal(string $id = '')
+    {
+        $url = config('source.external_url') . '/province';
+
+        return static::parseFromExternal(fetch(
+            $url,
+            config('source.external_key'),
+            config('source.external_data_path'),
+            [
+                'id' => $id
+            ]
+        ));
+    }
+
+    /**
+     * Parse province data from external source.
+     * @param array $data The province data from external source.
+     * @return array The parsed province data.
+     */
+    public static function parseFromExternal(array $data)
+    {
+        // Parse single province data
+        if (!is_numeric(key($data))) {
+            return new Province([
+                'id' => $data['province_id'],
+                'name' => $data['province']
+            ]);
+        }
+
+        // Parse multiple province data
+        return array_map(function ($province) {
+            return new Province([
+                'id' => $province['province_id'],
+                'name' => $province['province']
+            ]);
+        }, $data);
+    }
 }

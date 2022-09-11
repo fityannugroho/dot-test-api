@@ -36,6 +36,7 @@ if (! function_exists('fetch')) {
     function fetch($url, $key = '', $path = '', $params = [])
     {
         $client = new \GuzzleHttp\Client();
+
         $response = $client->request('GET', $url, [
             'query' => array_merge($params, ['key' => $key])
         ]);
