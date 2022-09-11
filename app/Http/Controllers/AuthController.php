@@ -30,6 +30,6 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::now()->addMinutes(config('sanctum.expiration'))->toDateTimeString()
-        ]);
+        ], 'Login successful', 201);
     }
 }
