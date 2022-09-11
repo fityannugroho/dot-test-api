@@ -11,6 +11,16 @@ use Illuminate\Http\Request;
 class CityController extends Controller
 {
     /**
+     * Determine if the data is from database or external source.
+     * @var bool
+     */
+    private bool $useExternalSrc;
+
+    public function __construct() {
+        $this->useExternalSrc = config('source.use_external');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -21,11 +31,11 @@ class CityController extends Controller
         $id = $request->input('id');
 
         if ($id) {
-            $city = City::find($id);
+            $city = $this->useExternalSrc ? City::getFromExternal($id) : City::find($id);
             return new ApiResource($city);
         }
 
-        return new ApiCollection(City::all());
+        return new ApiCollection($this->useExternalSrc ? City::getFromExternal() : City::all());
     }
 
     /**
