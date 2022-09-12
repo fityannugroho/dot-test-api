@@ -78,3 +78,13 @@ GET /cities?id={id}
 | Parameter | Type     | Required | Description |
 | :-------- | :------- | :------- | :---------- |
 | `id`      | `string` | Yes      | The Id of the city. |
+
+## Testing
+
+### Postman
+
+You can import the Postman collection from the `postman` directory to test the API.
+
+Import the [**`DOT API TEST.postman_collection.json`**](/postman/DOT%20API%20Test.postman_collection.json) and [**`DOT API TEST.postman_environment.json`**](/postman/DOT%20API%20TEST.postman_environment.json) files to your Postman application (see [Importing and exporting data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/)).
+
+Finally, you can run the Postman collection to test the API (see [Running collections in Postman](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/)).
