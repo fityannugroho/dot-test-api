@@ -101,7 +101,13 @@ class City extends Model
             $options['query']['id'] = $id;
         }
 
-        return static::parseFromExternal(fetch($url, $options));
+        $response = fetch($url, $options);
+
+        if (empty($response)) {
+            return [];
+        }
+
+        return static::parseFromExternal($response);
     }
 
     /**
