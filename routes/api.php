@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('provinces', 'App\Http\Controllers\ProvinceController')
-    ->only(['index', 'store']);
+    ->only(['index']);
+
 Route::apiResource('cities', 'App\Http\Controllers\CityController')
-    ->only(['index', 'store']);
+    ->only(['index']);
