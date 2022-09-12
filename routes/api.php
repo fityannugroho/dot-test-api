@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login']);
 
 Route::apiResource('provinces', 'App\Http\Controllers\ProvinceController')
-    ->only(['index', 'store'])
+    ->only(['index'])
     ->middleware('auth:sanctum');
 
 Route::apiResource('cities', 'App\Http\Controllers\CityController')
-    ->only(['index', 'store'])
+    ->only(['index'])
     ->middleware('auth:sanctum');
