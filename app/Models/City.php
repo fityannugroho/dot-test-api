@@ -85,4 +85,59 @@ class City extends Model
     {
         return $this->belongsTo(Province::class);
     }
+
+    /**
+     * Get city/cities data from external source.
+     * @param string|null $id The city Id.
+     * @return array The city data(s) from external source.
+     */
+    public static function getFromExternal(string $id = '')
+    {
+        $url = config('source.external_url') . '/city';
+        $options['query']['key'] = config('source.external_key');
+        $options['returnTarget'] = config('source.external_data_path');
+
+        if (!empty($id)) {
+            $options['query']['id'] = $id;
+        }
+
+        $response = fetch($url, $options);
+
+        if (empty($response)) {
+            return [];
+        }
+
+        return static::parseFromExternal($response);
+    }
+
+    /**
+     * Parse city data from external source.
+     * @param array $data The city data from external source.
+     * @return array The parsed city data.
+     */
+    public static function parseFromExternal(array $data)
+    {
+        // Parse single city data
+        if (!is_numeric(key($data))) {
+            return new City([
+                'id' => $data['city_id'],
+                'province_id' => $data['province_id'],
+                'name' => $data['city_name'],
+                'type' => $data['type'],
+                'postal_code' => $data['postal_code']
+            ]);
+        }
+
+        // Parse multiple city data
+        return array_map(function ($city) {
+            return new City([
+                'id' => $city['city_id'],
+                'province_id' => $city['province_id'],
+                'name' => $city['city_name'],
+                'type' => $city['type'],
+                'postal_code' => $city['postal_code']
+            ]);
+        }, $data);
+    }
+
 }

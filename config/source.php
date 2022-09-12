@@ -19,4 +19,6 @@ return [
 
     // Path to the data array in the response, separated by dots (.)
     'external_data_path' => env('EXTERNAL_SOURCE_DATA_PATH'),
+
+    'use_external' => env('USE_EXTERNAL_SOURCE', false),
 ];

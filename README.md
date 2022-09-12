@@ -6,7 +6,7 @@
 2. Install the dependencies. Run `composer install` command, then run `npm install` command.
 3. Create `.env` file by simply copying the `.env.example` file and rename it.
 4. Make sure you have a database created and the database server is running.
-5. Configure the `.env` file with your **database connection**, etc.
+5. Configure the `.env` file with your **database connection**, **seeder configuration**, etc.
 6. Generate the application key with `php artisan key:generate` command.
 7. Generate the database structure with this commands based on your preferences:
    - Use **`php artisan migrate`** for [creating / updating the database](https://laravel.com/docs/9.x/migrations).
@@ -32,6 +32,12 @@ You can fetch data from the external source API by following these steps:
 > **Warning!**
 >
 > `php artisan fetch` command will fetch the data from the external source API and store it in the database. **All existing data will be lost**.
+
+## Swappable Data Source
+
+You can swap the data source by simply changing the `USE_EXTERNAL_SOURCE` in the `.env` file to **`true`** . The application will use the external source API as the data source.
+
+Make sure you have configured the `.env` file with your **external source API connection** as described in the [Fetching data](#fetching-data) section.
 
 ## API Documentation
 
@@ -85,3 +91,13 @@ GET /cities?id={id}
 | Parameter | Type     | Required | Description |
 | :-------- | :------- | :------- | :---------- |
 | `id`      | `string` | Yes      | The Id of the city. |
+
+## Testing
+
+### Postman
+
+You can import the Postman collection from the `postman` directory to test the API.
+
+Import the [**`DOT API TEST.postman_collection.json`**](/postman/DOT%20API%20Test.postman_collection.json) and [**`DOT API TEST.postman_environment.json`**](/postman/DOT%20API%20TEST.postman_environment.json) files to your Postman application (see [Importing and exporting data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/)).
+
+Finally, you can run the Postman collection to test the API (see [Running collections in Postman](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/)).

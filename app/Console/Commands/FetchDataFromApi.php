@@ -47,11 +47,9 @@ class FetchDataFromApi extends Command
         try {
             $this->comment('Fetching provinces data...');
 
-            $provinces = fetch(
-                config('source.external_url') . '/province',
-                config('source.external_key'),
-                config('source.external_data_path')
-            );
+            $options['query']['key'] = config('source.external_key');
+            $options['returnTarget'] = config('source.external_data_path');
+            $provinces = fetch(config('source.external_url') . '/province', $options);
 
             $this->line(count($provinces) . ' province records fetched.');
             if (empty($provinces)) {
@@ -87,11 +85,9 @@ class FetchDataFromApi extends Command
         try {
             $this->comment('Fetching cities data...');
 
-            $cities = fetch(
-                config('source.external_url') . '/city',
-                config('source.external_key'),
-                config('source.external_data_path')
-            );
+            $options['query']['key'] = config('source.external_key');
+            $options['returnTarget'] = config('source.external_data_path');
+            $cities = fetch(config('source.external_url') . '/city', $options);
 
             $this->line(count($cities) . ' city records fetched.');
             if (empty($cities)) {

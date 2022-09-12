@@ -3,13 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProvinceRequest;
-use App\Http\Resources\ApiCollection;
-use App\Http\Resources\ApiResource;
 use App\Models\Province;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 
 class ProvinceController extends Controller
 {
+    use ApiResponser;
+
+    /**
+     * Determine if the data is from database or external source.
+     * @var bool
+     */
+    private bool $useExternalSrc;
+
+    public function __construct() {
+        $this->useExternalSrc = config('source.use_external');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,11 +32,16 @@ class ProvinceController extends Controller
         $id = $request->input('id');
 
         if ($id) {
-            $province = Province::find($id);
-            return new ApiResource($province);
+            $province = $this->useExternalSrc ? Province::getFromExternal($id) : Province::find($id);
+
+            if (empty($province)) {
+                return $this->error('Not found', 404);
+            }
+
+            return $this->success($province);
         }
 
-        return new ApiCollection(Province::all());
+        return $this->success($this->useExternalSrc ? Province::getFromExternal() : Province::all());
     }
 
     /**
@@ -38,7 +54,7 @@ class ProvinceController extends Controller
     {
         $province = Province::create($request->validated());
 
-        return new ApiResource($province);
+        return $this->success($province, 'Created', 201);
     }
 
     /**
@@ -49,7 +65,7 @@ class ProvinceController extends Controller
      */
     public function show(Province $province)
     {
-        return new ApiResource($province);
+        return $this->success($province);
     }
 
     /**

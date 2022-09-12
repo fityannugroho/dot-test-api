@@ -1,0 +1,929 @@
+{
+	"info": {
+		"_postman_id": "94427f9f-5dd8-423e-a137-1df950a98a5a",
+		"name": "DOT API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12397879"
+	},
+	"item": [
+		{
+			"name": "Authentications",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 201 value', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"    \r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(201);\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('Login successful');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"});\r",
+									"    \r",
+									"pm.test('response body data should have property with correct value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    const { data } = responseJson;\r",
+									"    \r",
+									"    pm.expect(data).to.have.ownProperty('access_token');\r",
+									"    pm.expect(data.access_token).to.not.equals('');\r",
+									"    pm.expect(data.access_token).to.not.equals(null);\r",
+									"\r",
+									"    pm.expect(data).to.have.ownProperty('token_type');\r",
+									"    pm.expect(data.token_type).to.equals('Bearer');\r",
+									"\r",
+									"    pm.expect(data).to.have.ownProperty('expires_at');\r",
+									"    pm.expect(data.expires_at).to.not.equals('');\r",
+									"    pm.expect(data.expires_at).to.not.equals(null);\r",
+									"    \r",
+									"    // menyimpan accessToken dan refreshToken di environment variable\r",
+									"    pm.environment.set('accessToken', data.access_token);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{testerEmail}}\",\r\n    \"password\": \"{{testerPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with Bad Payloads",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 400 value', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"    \r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('error');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(400);\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.be.an('array');\r",
+									"    pm.expect(responseJson.message).to.not.equals([]);\r",
+									"});\r",
+									"    \r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"    if(badPayloads && badPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Login with Bad Payloads');\r",
+									"    }\r",
+									"}\r",
+									"    \r",
+									"repeatRequestUntilDatasetEmpty();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.environment.get('testerEmail');\r",
+									"const password = pm.environment.get('testerPassword');\r",
+									"let badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"if (!badPayloads || badPayloads.length === 0) {\r",
+									"    badPayloads = [\r",
+									"        { password },\r",
+									"        { email: 1, password },\r",
+									"        { email },\r",
+									"        { email, password: true }\r",
+									"    ]\r",
+									"}\r",
+									"    \r",
+									"const currentBadPayload = badPayloads.shift();\r",
+									"pm.environment.set('currentBadPayload', JSON.stringify(currentBadPayload));\r",
+									"pm.environment.set('badPayloads', badPayloads);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with Wrong Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 401 value', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"    \r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('error');\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(401);\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.be.an('string');\r",
+									"    pm.expect(responseJson.message).to.equals('Unauthorized');\r",
+									"});\r",
+									"    \r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"    if(badPayloads && badPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Login with Wrong Credentials');\r",
+									"    }\r",
+									"}\r",
+									"    \r",
+									"repeatRequestUntilDatasetEmpty();"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const email = pm.environment.get('testerEmail');\r",
+									"const password = pm.environment.get('testerPassword');\r",
+									"let badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"if (!badPayloads || badPayloads.length === 0) {\r",
+									"    badPayloads = [\r",
+									"        { email: 'unknown@email.com', password },\r",
+									"        { email: 'unknown@email.com', password: 'unknownpassword' },\r",
+									"        { email, password: 'wrongpassword' },\r",
+									"    ]\r",
+									"}\r",
+									"    \r",
+									"const currentBadPayload = badPayloads.shift();\r",
+									"pm.environment.set('currentBadPayload', JSON.stringify(currentBadPayload));\r",
+									"pm.environment.set('badPayloads', badPayloads);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provinces",
+			"item": [
+				{
+					"name": "Get All Provinces",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should have the correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(200);\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('OK');\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body data should contain at least 1 item', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    const { data } = responseJson;\r",
+									"    \r",
+									"    pm.expect(data).to.be.an('array');\r",
+									"    pm.expect(data).lengthOf.at.least(1);\r",
+									"});\r",
+									"\r",
+									"pm.test('response data item should have the correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    const firstProvince = responseJson.data[0];\r",
+									"\r",
+									"    pm.expect(firstProvince).to.ownProperty('id');\r",
+									"    pm.expect(firstProvince.id).to.be.a('string');\r",
+									"    pm.expect(firstProvince.id).to.not.equals('');\r",
+									"    pm.expect(firstProvince.id).to.not.equals(null);\r",
+									"\r",
+									"    pm.expect(firstProvince).to.ownProperty('name');\r",
+									"    pm.expect(firstProvince.name).to.be.a('string');\r",
+									"    pm.expect(firstProvince.name).to.not.equals('');\r",
+									"    pm.expect(firstProvince.name).to.not.equals(null);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/provinces",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"provinces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Province By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should have the correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(200);\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('OK');\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response data should have the correct property and value', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"\r",
+									"    pm.expect(data).to.ownProperty('id');\r",
+									"    pm.expect(data.id).to.be.a('string');\r",
+									"    pm.expect(data.id).to.equals(pm.environment.get('provinceId'))\r",
+									"\r",
+									"    pm.expect(data).to.ownProperty('name');\r",
+									"    pm.expect(data.name).to.be.a('string');\r",
+									"    pm.expect(data.name).to.equals(pm.environment.get('provinceName'));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/provinces?id={{provinceId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"provinces"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{provinceId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Province with Unknown Ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 404 value', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"    \r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('error');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(404);\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.equals('Not found');\r",
+									"});\r",
+									"    \r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"    if(badPayloads && badPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Get Specific Province with Unknown Ids');\r",
+									"    }\r",
+									"}\r",
+									"    \r",
+									"repeatRequestUntilDatasetEmpty();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"if (!badPayloads || badPayloads.length === 0) {\r",
+									"    badPayloads = [\r",
+									"        null,\r",
+									"        'unknownId',\r",
+									"        99\r",
+									"    ]\r",
+									"}\r",
+									"    \r",
+									"const currentBadPayload = badPayloads.shift();\r",
+									"pm.environment.set('currentBadPayload', JSON.stringify(currentBadPayload));\r",
+									"pm.environment.set('badPayloads', badPayloads);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/provinces?id={{currentBadPayload}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"provinces"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{currentBadPayload}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{accessToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Cities",
+			"item": [
+				{
+					"name": "Get All Cities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should have the correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(200);\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('OK');\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body data should contain at least 1 item', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    const { data } = responseJson;\r",
+									"    \r",
+									"    pm.expect(data).to.be.an('array');\r",
+									"    pm.expect(data).lengthOf.at.least(1);\r",
+									"});\r",
+									"\r",
+									"pm.test('response data item should have the correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    const firstCity = responseJson.data[0];\r",
+									"\r",
+									"    pm.expect(firstCity).to.ownProperty('id');\r",
+									"    pm.expect(firstCity.id).to.be.a('string');\r",
+									"    pm.expect(firstCity.id).to.not.equals('');\r",
+									"    pm.expect(firstCity.id).to.not.equals(null);\r",
+									"\r",
+									"    pm.expect(firstCity).to.ownProperty('province_id');\r",
+									"    pm.expect(firstCity.province_id).to.be.a('string');\r",
+									"    pm.expect(firstCity.province_id).to.not.equals('');\r",
+									"    pm.expect(firstCity.province_id).to.not.equals(null);\r",
+									"\r",
+									"    pm.expect(firstCity).to.ownProperty('name');\r",
+									"    pm.expect(firstCity.name).to.be.a('string');\r",
+									"    pm.expect(firstCity.name).to.not.equals('');\r",
+									"    pm.expect(firstCity.name).to.not.equals(null);\r",
+									"\r",
+									"    pm.expect(firstCity).to.ownProperty('type');\r",
+									"    pm.expect(firstCity.type).to.be.a('string');\r",
+									"    pm.expect(firstCity.type).to.not.equals('');\r",
+									"    pm.expect(firstCity.type).to.not.equals(null);\r",
+									"\r",
+									"    pm.expect(firstCity).to.ownProperty('postal_code');\r",
+									"    pm.expect(firstCity.postal_code).to.be.a('string');\r",
+									"    pm.expect(firstCity.postal_code).to.not.equals('');\r",
+									"    pm.expect(firstCity.postal_code).to.not.equals(null);\r",
+									"    pm.expect(firstCity.postal_code.length).to.equals(5);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/cities",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific City By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should have the correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(200);\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('OK');\r",
+									"    \r",
+									"    pm.expect(responseJson).to.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response data should have the correct property and value', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"\r",
+									"    pm.expect(data).to.ownProperty('id');\r",
+									"    pm.expect(data.id).to.be.a('string');\r",
+									"    pm.expect(data.id).to.equals(pm.environment.get('cityId'))\r",
+									"\r",
+									"    pm.expect(data).to.ownProperty('province_id');\r",
+									"    pm.expect(data.province_id).to.be.a('string');\r",
+									"    pm.expect(data.province_id).to.equals(pm.environment.get('provinceId'));\r",
+									"\r",
+									"    pm.expect(data).to.ownProperty('name');\r",
+									"    pm.expect(data.name).to.be.a('string');\r",
+									"    pm.expect(data.name).to.equals(pm.environment.get('cityName'));\r",
+									"\r",
+									"    pm.expect(data).to.ownProperty('type');\r",
+									"    pm.expect(data.type).to.be.a('string');\r",
+									"    pm.expect(data.type).to.equals(pm.environment.get('cityType'));\r",
+									"\r",
+									"    pm.expect(data).to.ownProperty('postal_code');\r",
+									"    pm.expect(data.postal_code).to.be.a('string');\r",
+									"    pm.expect(data.postal_code).to.equals(pm.environment.get('cityPostalCode'));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/cities?id={{cityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cities"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{cityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific City with Unknown Ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 404 value', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json');\r",
+									"}); \r",
+									"    \r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"    \r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('error');\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('status_code');\r",
+									"    pm.expect(responseJson.status_code).to.equals(404);\r",
+									"\r",
+									"    pm.expect(responseJson).to.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.equals('Not found');\r",
+									"});\r",
+									"    \r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"    if(badPayloads && badPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Get Specific City with Unknown Ids');\r",
+									"    }\r",
+									"}\r",
+									"    \r",
+									"repeatRequestUntilDatasetEmpty();\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badPayloads = pm.environment.get('badPayloads');\r",
+									"    \r",
+									"if (!badPayloads || badPayloads.length === 0) {\r",
+									"    badPayloads = [\r",
+									"        null,\r",
+									"        'unknownId',\r",
+									"        99999999\r",
+									"    ]\r",
+									"}\r",
+									"    \r",
+									"const currentBadPayload = badPayloads.shift();\r",
+									"pm.environment.set('currentBadPayload', JSON.stringify(currentBadPayload));\r",
+									"pm.environment.set('badPayloads', badPayloads);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/cities?id={{currentBadPayload}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cities"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{currentBadPayload}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{accessToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
