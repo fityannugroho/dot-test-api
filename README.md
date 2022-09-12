@@ -37,6 +37,19 @@ You can fetch data from the external source API by following these steps:
 
 The base URL of the API is `http://localhost:8000/api`.
 
+### Authentication
+
+#### Login
+
+```http
+POST /login
+```
+
+| Body Parameter | Type     | Required | Description |
+| :------------- | :------- | :------- | :---------- |
+| `email`        | `string` | Yes      | The email of the user. |
+| `password`     | `string` | Yes      | The password of the user. |
+
 ### Provinces
 
 #### 1. Get all provinces
