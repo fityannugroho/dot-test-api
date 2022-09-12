@@ -43,6 +43,19 @@ Make sure you have configured the `.env` file with your **external source API co
 
 The base URL of the API is `http://localhost:8000/api`.
 
+### Authentication
+
+#### Login
+
+```http
+POST /login
+```
+
+| Body Parameter | Type     | Required | Description |
+| :------------- | :------- | :------- | :---------- |
+| `email`        | `string` | Yes      | The email of the user. |
+| `password`     | `string` | Yes      | The password of the user. |
+
 ### Provinces
 
 #### 1. Get all provinces
